@@ -1,0 +1,69 @@
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-up {
+    from { opacity: 0; transform: translateY(50px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.8s ease-out;
+}
+
+.animate-slide-up {
+    animation: slide-up 0.5s ease-out;
+}
+
+.bg-railway-blue {
+    background-color: #1a237e;
+}
+
+.bg-railway-red {
+    background-color: #c62828;
+}
+
+.hover\:bg-red-700:hover {
+    background-color: #b71c1c;
+}
+
+/* Print Styles */
+@media print {
+    .no-print { display: none; }
+    #results { display: block !important; }
+}
+
+/* Add to existing styles */
+.text-railway-red {
+    color: #c62828;
+}
+
+.hover\:text-red-300:hover {
+    color: #fecaca;
+}
+
+/* Add input validation styling */
+.invalid-pnr {
+    border-color: #ef4444 !important;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+}
+
+/* Add input text styling */
+#pnrInput {
+    padding-top: 1.5rem;
+    padding-bottom: 0.5rem;
+    font-size: 1.125rem;
+}
+
+/* Adjust label positioning */
+.absolute.peer-focus\:top-4 {
+    top: 1rem;
+    transform: none;
+} 

@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rail Sarthi - Instant PNR Status Checker | Indian Railways</title>
+
+    <meta name="description" content="Check your Indian Railways PNR status instantly with Rail Sarthi. Get real-time updates on train seat confirmation, waiting list, running status, and more. Fast, reliable, and easy to use.">
+    <meta name="keywords" content="PNR status, Indian Railways, train PNR, check PNR status, railway enquiry, train seat availability, PNR checker, Rail Sarthi, PNR status online, IRCTC PNR, check train PNR, what is PNR number, Indian Railways travel tips">
+    <meta name="author" content="Sahil Thakur">
+    <link rel="canonical" href="https://yourwebsite.com/"> <link rel="icon" href="favicon.ico" type="image/x-icon"> <meta property="og:title" content="Rail Sarthi - Instant PNR Status Checker & Railway Info">
+    <meta property="og:description" content="Fast and reliable PNR status checks for Indian Railways. Plus, get helpful travel tips and understand your PNR better.">
+    <meta property="og:image" content="https://yourwebsite.com/og-image.jpg"> <meta property="og:url" content="https://yourwebsite.com/"> <meta property="og:type" content="website">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Rail Sarthi - PNR Status & Train Travel Guide">
+    <meta name="twitter:description" content="Your one-stop solution for Indian Railways PNR status, understanding PNR numbers, and essential train travel tips.">
+    <meta name="twitter:image" content="https://yourwebsite.com/twitter-image.jpg"> <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1e3a8a; /* A deep blue */
+        }
+
+        .bg-railway-red {
+            background-color: #dc2626; /* A vibrant red */
+        }
+        .text-railway-red {
+            color: #dc2626;
+        }
+        .border-railway-red {
+            border-color: #dc2626;
+        }
+        .hover\:bg-railway-red-dark:hover {
+            background-color: #b91c1c; /* Darker red for hover */
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        /* Slide-up animation */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up {
+            animation: slideUp 0.6s ease-out forwards;
+        }
+
+        /* Floating label styling */
+        .floating-label-input:focus-within label,
+        .floating-label-input input:not(:placeholder-shown) + label {
+            transform: translateY(-1.75rem) scale(0.875);
+            color: #dc2626; /* railway-red */
+            background-color: white;
+            padding-left: 0.25rem;
+            padding-right: 0.25rem;
+        }
+        .floating-label-input input:focus + label {
+             color: #dc2626; /* railway-red */
+        }
+
+        /* Interactive Article Cards */
+        .article-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .article-card:hover {
+            transform: translateY(-5px) scale(1.02); /* Subtle hover effect */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 80px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -40px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+        .tooltip:hover .tooltiptext, .tooltip.active .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        .hidden-content {
+            display: none;
+            margin-top: 1rem; /* Add some space above the expanded content */
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb; /* A light border */
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="relative container mx-auto px-4 py-8 md:py-12 max-w-4xl min-h-screen">
+        <a href="#" id="developerLink" class="absolute top-4 right-4 md:top-6 md:right-6 bg-white text-railway-red px-4 py-2 rounded-lg shadow-md hover:bg-gray-100 transition-colors text-sm font-medium z-10">
+            <i class="fas fa-code mr-1"></i> Developer
+        </a>
+
+        <header class="text-center mb-10 md:mb-16 animate-fade-in pt-12 md:pt-0">
+            <div class="inline-block bg-railway-red text-white px-6 py-3 rounded-xl shadow-lg mb-4">
+                <h1 class="text-4xl md:text-5xl font-extrabold flex items-center justify-center">
+                    <i class="fas fa-train-subway mr-3"></i> Rail Sarthi
+                </h1>
+            </div>
+            <p class="text-gray-200 text-lg md:text-xl">Your Express Track to PNR Status & Train Info</p>
+        </header>
+
+        <section id="pnr-checker" class="bg-white rounded-xl shadow-2xl p-6 sm:p-8 mb-10 md:mb-12 transform transition-all duration-300 hover:scale-[1.01]">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Check Your PNR Status</h2>
+            <div class="relative floating-label-input">
+                <input
+                    type="text"
+                    id="pnrInput"
+                    maxlength="10"
+                    inputmode="numeric"
+                    pattern="\d{10}"
+                    class="w-full pt-6 pb-2 px-4 border-2 border-gray-300 rounded-lg peer focus:border-railway-red focus:outline-none text-gray-800 text-lg placeholder-transparent"
+                    placeholder="Enter 10-Digit PNR"
+                    autofocus
+                />
+                <label
+                    for="pnrInput"
+                    class="absolute left-4 top-4 px-1 text-gray-500 transition-all duration-200 ease-in-out pointer-events-none text-lg"
+                >
+                    Enter 10-Digit PNR
+                </label>
+            </div>
+            <div class="mt-6 flex flex-col sm:flex-row gap-3">
+                <button
+                    id="checkBtn"
+                    class="w-full sm:w-auto flex-grow bg-railway-red text-white py-3 px-6 rounded-lg hover:bg-railway-red-dark transition-colors duration-300 flex items-center justify-center text-lg font-semibold shadow-md hover:shadow-lg"
+                >
+                    <span id="buttonText" class="mr-2">Check Status</span>
+                    <i id="buttonIcon" class="fas fa-search"></i>
+                    <svg class="animate-spin h-5 w-5 text-white ml-2 hidden" id="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </button>
+                <button
+                    id="clearBtn"
+                    class="w-full sm:w-auto bg-gray-200 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-300 transition-colors duration-300 flex items-center justify-center text-lg font-semibold shadow"
+                >
+                    <i class="fas fa-times mr-2"></i> Clear Form
+                </button>
+            </div>
+            <p id="pnrError" class="text-red-500 text-sm mt-3 text-center hidden"></p>
+        </section>
+
+        <section id="resultsSection" class="hidden bg-white rounded-xl shadow-2xl p-6 sm:p-8 mb-10 md:mb-12 animate-slide-up">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center border-b pb-3">PNR Status Details</h2>
+            <div id="resultsContent">
+                <p class="text-gray-600 text-center py-4">Enter a PNR number above to see the status.</p>
+            </div>
+        </section>
+
+        <section id="articles" class="mb-10 md:mb-16">
+            <h2 class="text-3xl font-bold text-white mb-8 text-center">Helpful Railway Information</h2>
+            <div class="grid gap-6 md:grid-cols-3">
+                <article class="bg-white p-6 rounded-lg shadow-lg article-card">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3 flex items-center"><i class="fas fa-clipboard-list mr-2 text-railway-red"></i> How to Check PNR Status</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Learn the step-by-step process to check your PNR status online, via SMS, or through railway enquiry counters. Understand what different status codes like CNF, RAC, WL mean for your journey.</p>
+                    <a href="#" class="read-more-link text-railway-red hover:underline mt-4 inline-block font-medium" data-article="article1">Read More &rarr;</a>
+                    <div id="article1-content" class="hidden-content text-sm text-gray-700 space-y-2">
+                        <p><strong>Checking your PNR status is crucial for a hassle-free train journey. Here's how:</strong></p>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><strong>Online:</strong> The most common method. Visit the official Indian Railways (IRCTC) website or use reliable third-party websites and apps like Rail Sarthi. Simply enter your 10-digit PNR number to get your current PNR status online.</li>
+                            <li><strong>SMS:</strong> Send an SMS with your PNR number to 139 (e.g., PNR &lt;Your PNR Number&gt;). This is useful when internet access is limited.</li>
+                            <li><strong>Railway Enquiry Counters:</strong> Visit any railway station enquiry counter with your PNR number.</li>
+                        </ul>
+                        <p><strong>Understanding PNR Status Codes:</strong></p>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><strong>CNF (Confirmed):</strong> Your seat is confirmed. Coach and seat numbers are usually available after chart preparation.</li>
+                            <li><strong>RAC (Reservation Against Cancellation):</strong> You are likely to get a berth, which you might have to share initially. It usually gets confirmed.</li>
+                            <li><strong>WL (Waiting List):</strong> Your ticket is not yet confirmed. It moves up as other passengers cancel. GNWL (General Waiting List) has the highest confirmation chances, followed by TQWL (Tatkal Waiting List), PQWL (Pooled Quota Waiting List), and RLWL (Remote Location Waiting List).</li>
+                            <li><strong>CAN (Cancelled):</strong> The ticket has been cancelled.</li>
+                            <li><strong>NOSB (No Seat Berth):</strong> For child passengers below 5 years for whom no seat is opted.</li>
+                        </ul>
+                        <p>Always double-check your PNR status before your journey, especially a few hours before departure, as chart preparation finalizes seat allocations. Knowing your IRCTC PNR status helps you plan better.</p>
+                    </div>
+                </article>
+
+                <article class="bg-white p-6 rounded-lg shadow-lg article-card">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3 flex items-center"><i class="fas fa-ticket-alt mr-2 text-railway-red"></i> Understanding PNR Numbers</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Discover what your 10-digit PNR (Passenger Name Record) number signifies. Each part of the PNR holds specific information about your train booking, from passenger details to journey class.</p>
+                    <a href="#" class="read-more-link text-railway-red hover:underline mt-4 inline-block font-medium" data-article="article2">Read More &rarr;</a>
+                    <div id="article2-content" class="hidden-content text-sm text-gray-700 space-y-2">
+                        <p><strong>What is a PNR Number?</strong> PNR stands for "Passenger Name Record". It's a unique 10-digit number automatically generated by the Indian Railways' Computerized Reservation System (CRS) when you book a train ticket. This PNR number is your primary reference for all journey-related queries and verifications.</p>
+                        <p><strong>Information Contained in Your PNR:</strong></p>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><strong>Passenger Details:</strong> Name, age, gender, and berth preference (if any) of all passengers on the ticket.</li>
+                            <li><strong>Train Details:</strong> Train number and name.</li>
+                            <li><strong>Journey Details:</strong> Date of journey, scheduled departure and arrival times, originating station, and destination station.</li>
+                            <li><strong>Class of Travel:</strong> Such as Sleeper (SL), 3rd AC (3A), 2nd AC (2A), 1st AC (1A), Chair Car (CC), etc.</li>
+                            <li><strong>Booking Status:</strong> The status of your ticket at the time of booking (e.g., CNF, WL).</li>
+                            <li><strong>Current Status:</strong> The real-time status of your ticket (e.g., CNF with seat number, RAC, WL position). This is what you check using a PNR checker.</li>
+                            <li><strong>Coach and Seat/Berth Number:</strong> Assigned after chart preparation if the ticket is confirmed.</li>
+                            <li><strong>Fare Details:</strong> Total fare paid for the ticket.</li>
+                        </ul>
+                        <p>The PNR number is essential for checking your reservation status, for the Ticket Checking Examiner (TTE) on the train to verify your booking, and for any modifications or cancellations. Keep your train ticket PNR information handy and secure. Understanding your PNR details can make your Indian Railways experience smoother.</p>
+                    </div>
+                </article>
+
+                <article class="bg-white p-6 rounded-lg shadow-lg article-card">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3 flex items-center"><i class="fas fa-suitcase-rolling mr-2 text-railway-red"></i> Essential Train Travel Tips</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Make your Indian Railways journey smoother with these essential tips: packing advice, food on trains, safety precautions, and how to deal with common travel issues. Travel smart!</p>
+                    <a href="#" class="read-more-link text-railway-red hover:underline mt-4 inline-block font-medium" data-article="article3">Read More &rarr;</a>
+                    <div id="article3-content" class="hidden-content text-sm text-gray-700 space-y-2">
+                        <p><strong>Make your Indian Railways journey comfortable and safe with these tips:</strong></p>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><strong>Packing Smart:</strong>
+                                <ul class="list-disc list-inside ml-6">
+                                    <li>Travel light but carry essentials: Valid ID proof (Aadhaar, Voter ID, etc.), train ticket (digital or print), seasonal clothing.</li>
+                                    <li>Pack a small first-aid kit, toiletries, a power bank, and a lock and chain for your luggage.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Food and Water:</strong>
+                                <ul class="list-disc list-inside ml-6">
+                                    <li>You can pre-book meals via IRCTC eCatering, purchase from the pantry car (if available), or buy from authorized vendors.</li>
+                                    <li>Carry your own water bottle and refill it, or buy sealed bottles. It's wise to pack some non-perishable snacks too.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Safety and Security:</strong>
+                                <ul class="list-disc list-inside ml-6">
+                                    <li>Secure your luggage under your seat or berth using a chain and lock.</li>
+                                    <li>Be aware of your surroundings and keep valuables safe. Avoid accepting food from strangers.</li>
+                                    <li>Note down Railway Protection Force (RPF) helpline numbers (e.g., 139, 182).</li>
+                                </ul>
+                            </li>
+                            <li><strong>During the Journey:</strong>
+                                <ul class="list-disc list-inside ml-6">
+                                    <li>Confirm your coach and seat number before boarding.</li>
+                                    <li>Keep your ticket and ID handy for TTE checking.</li>
+                                    <li>Use apps like Rail Sarthi to track your train's live running status and expected arrival times.</li>
+                                    <li>Maintain hygiene and help keep the train clean.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Dealing with Issues:</strong>
+                                <ul class="list-disc list-inside ml-6">
+                                    <li>For delays, check the live train status.</li>
+                                    <li>In case of lost luggage or medical emergencies, contact the TTE, RPF, or station master immediately.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <p>A little preparation can go a long way in ensuring a pleasant train journey in India. This IRCTC travel guide aims to help you travel smart!</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <footer class="mt-12 md:mt-16 text-center py-6 border-t border-blue-600">
+            <p class="text-sm text-gray-300 opacity-90">
+                Crafted with <i class="fas fa-heart text-railway-red"></i> by
+                <a href="#" id="footerDeveloperLink" class="text-gray-100 font-medium hover:text-railway-red transition-colors">
+                    Sahil Thakur
+                </a> | &copy; <span id="currentYear"></span> Rail Sarthi. All Rights Reserved.
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const pnrInput = document.getElementById('pnrInput');
+            const checkBtn = document.getElementById('checkBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const spinner = document.getElementById('spinner');
+            const buttonText = document.getElementById('buttonText');
+            const buttonIcon = document.getElementById('buttonIcon');
+            const resultsSection = document.getElementById('resultsSection');
+            const resultsContent = document.getElementById('resultsContent');
+            const pnrError = document.getElementById('pnrError');
+            const developerLinkFooter = document.getElementById('footerDeveloperLink');
+            const developerLinkTop = document.getElementById('developerLink');
+
+            // Set current year in footer
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            
+            // Autofocus PNR input
+            if (pnrInput) pnrInput.focus();
+
+            // Function to handle PNR check
+            function performPnrCheck() {
+                const pnrValue = pnrInput.value.trim();
+                pnrError.classList.add('hidden');
+                resultsSection.classList.add('hidden');
+
+                if (pnrValue.length !== 10 || !/^\d{10}$/.test(pnrValue)) {
+                    pnrError.textContent = 'Please enter a valid 10-digit PNR number.';
+                    pnrError.classList.remove('hidden');
+                    if (pnrInput) pnrInput.focus();
+                    return;
+                }
+
+                buttonText.textContent = 'Checking...';
+                buttonIcon.className = 'fas fa-hourglass-half';
+                spinner.classList.remove('hidden');
+                checkBtn.disabled = true;
+                clearBtn.disabled = true;
+                if (pnrInput) pnrInput.disabled = true;
+
+                // Simulate API call
+                setTimeout(() => {
+                    buttonText.textContent = 'Check Status';
+                    buttonIcon.className = 'fas fa-search';
+                    spinner.classList.add('hidden');
+                    checkBtn.disabled = false;
+                    clearBtn.disabled = false;
+                   if (pnrInput) pnrInput.disabled = false;
+
+                    const pnrForDisplay = pnrValue; 
+
+                    resultsContent.innerHTML = `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-gray-100 p-3 rounded-md flex justify-between items-center">
+                                <span><strong>PNR Number:</strong> <span id="displayedPnr">${pnrForDisplay}</span></span>
+                                <button id="copyPnrBtn" class="ml-2 p-1 bg-gray-200 hover:bg-gray-300 rounded text-xs tooltip">
+                                    <i class="fas fa-copy"></i>
+                                    <span class="tooltiptext" id="copyTooltip">Copy PNR</span>
+                                </button>
+                            </div>
+                            <div class="bg-gray-100 p-3 rounded-md"><strong>Train Name/No:</strong> Howrah Express / 12839</div>
+                            <div class="bg-gray-100 p-3 rounded-md"><strong>Journey Date:</strong> 25 Dec 2024</div>
+                            <div class="bg-gray-100 p-3 rounded-md"><strong>From:</strong> Mumbai (CSMT)</div>
+                            <div class="bg-gray-100 p-3 rounded-md"><strong>To:</strong> Delhi (NDLS)</div>
+                            <div class="bg-gray-100 p-3 rounded-md"><strong>Class:</strong> Sleeper (SL)</div>
+                            <div class="bg-gray-100 p-3 rounded-md"><strong>Charting Status:</strong> Chart Prepared</div>
+                        </div>
+                        <div class="mt-4 border-t pt-4">
+                            <h4 class="font-semibold mb-2">Passenger Details:</h4>
+                            <ul class="list-disc list-inside text-gray-700">
+                                <li>Passenger 1: S10, 25 (Booking Status: <span class="font-medium text-green-600">CNF/Confirm</span>)</li>
+                                <li>Passenger 2: S10, 26 (Booking Status: <span class="font-medium text-green-600">CNF/Confirm</span>)</li>
+                            </ul>
+                        </div>
+                        <p class="mt-4 text-green-700 font-bold text-lg">Status: Confirmed</p>
+                    `;
+                    resultsSection.classList.remove('hidden');
+                    resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                    // Add event listener for the new copy button
+                    const copyPnrBtn = document.getElementById('copyPnrBtn');
+                    const copyTooltip = document.getElementById('copyTooltip');
+                    if (copyPnrBtn && copyTooltip) {
+                        copyPnrBtn.addEventListener('click', () => {
+                            navigator.clipboard.writeText(pnrForDisplay).then(() => {
+                                copyTooltip.textContent = 'Copied!';
+                                copyPnrBtn.classList.add('active'); 
+                                setTimeout(() => {
+                                    copyTooltip.textContent = 'Copy PNR';
+                                    copyPnrBtn.classList.remove('active'); 
+                                }, 1500);
+                            }).catch(err => {
+                                console.error('Failed to copy PNR: ', err);
+                                copyTooltip.textContent = 'Failed!';
+                                 copyPnrBtn.classList.add('active');
+                                setTimeout(() => {
+                                    copyTooltip.textContent = 'Copy PNR';
+                                    copyPnrBtn.classList.remove('active');
+                                }, 1500);
+                            });
+                        });
+                    }
+
+                }, 1500); 
+            }
+
+            // Event listener for Check Status button
+            if (checkBtn) {
+                checkBtn.addEventListener('click', performPnrCheck);
+            }
+
+            // Event listener for Enter key on PNR input
+            if (pnrInput) {
+                pnrInput.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault(); 
+                        performPnrCheck();
+                    }
+                });
+            }
+            
+            // Event listener for Clear Form button
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function() {
+                    if(pnrInput) pnrInput.value = '';
+                    pnrError.classList.add('hidden');
+                    resultsSection.classList.add('hidden');
+                    resultsContent.innerHTML = '<p class="text-gray-600 text-center py-4">Enter a PNR number above to see the status.</p>';
+                    if(pnrInput) pnrInput.disabled = false;
+                    if(checkBtn) checkBtn.disabled = false;
+                    clearBtn.disabled = false; 
+                    if(pnrInput) pnrInput.focus();
+                });
+            }
+
+            // Clear error when user types
+            if (pnrInput) {
+                pnrInput.addEventListener('input', function() {
+                    if (!pnrError.classList.contains('hidden')) {
+                        pnrError.classList.add('hidden');
+                    }
+                });
+            }
+
+            // Set portfolio link for developer buttons
+            const portfolioLink = 'https://www.linkedin.com/in/sahil-thakur-017817224/'; 
+            if (developerLinkFooter) {
+                developerLinkFooter.href = portfolioLink;
+                developerLinkFooter.target = "_blank"; 
+            }
+            if (developerLinkTop) {
+                developerLinkTop.href = portfolioLink;
+                developerLinkTop.target = "_blank";
+            }
+
+            // Read More functionality for articles
+            const readMoreLinks = document.querySelectorAll('.read-more-link');
+            readMoreLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const articleId = this.dataset.article;
+                    const contentDiv = document.getElementById(articleId + '-content');
+                    
+                    if (contentDiv) {
+                        const isHidden = contentDiv.style.display === 'none' || contentDiv.classList.contains('hidden-content');
+                        
+                        // Toggle visibility using style.display for smoother transitions if CSS transitions are added
+                        if (isHidden) {
+                            contentDiv.style.display = 'block';
+                            contentDiv.classList.remove('hidden-content'); // Ensure class is also removed if used
+                            this.innerHTML = 'Read Less &uarr;';
+                            this.setAttribute('aria-expanded', 'true');
+                            contentDiv.setAttribute('aria-hidden', 'false');
+                        } else {
+                            contentDiv.style.display = 'none';
+                            // contentDiv.classList.add('hidden-content'); // Add back if primarily using class
+                            this.innerHTML = 'Read More &rarr;';
+                            this.setAttribute('aria-expanded', 'false');
+                            contentDiv.setAttribute('aria-hidden', 'true');
+                        }
+                    }
+                });
+                // Set initial ARIA attributes
+                const articleId = link.dataset.article;
+                const contentDiv = document.getElementById(articleId + '-content');
+                if (contentDiv) {
+                    link.setAttribute('aria-expanded', 'false');
+                    contentDiv.setAttribute('aria-hidden', 'true');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
